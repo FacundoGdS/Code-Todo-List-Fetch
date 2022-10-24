@@ -91,7 +91,7 @@ const Home = () => {
   return (
     <>
       <div className="text-center">
-        <h1>Todo-list</h1>
+        <h1>Todo-list-with-Fetch</h1>
         <div>
           <input
             onChange={inputChangeHandler}
