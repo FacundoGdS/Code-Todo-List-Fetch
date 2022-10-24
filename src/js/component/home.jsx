@@ -3,7 +3,8 @@ const Home = () => {
   const [inputField, setInput] = useState(""); //Default.
   const [tasks, setTasks] = useState([]);
   const addTaskHandler = (e) => {
-    e.preventDefault();
+    if(inputField === "") {alert("Please, write a task.")}
+    else {e.preventDefault();
     let newTasks = [...tasks, {
       label: inputField,
       done: false,
@@ -31,13 +32,42 @@ const Home = () => {
   .catch((error) => {
     console.log("error");
     console.log(error);
-  });
+  });}
   };
+
   const inputChangeHandler = (event) => {
     //Seteo continuo.
     setInput(event.target.value);
     console.log(event.target.value);
   };
+
+  const deleteTask = (indexDelete) => {
+    let newTasks2 = tasks.filter((item, index)=>index!==indexDelete);
+    setTasks(newTasks2);
+    console.log(newTasks2);
+    console.log(tasks);
+    fetch("https://assets.breatheco.de/apis/fake/todos/user/facundogds", {
+      method: "PUT",
+      body: JSON.stringify(newTasks2),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+  .then((response)=>{
+    console.log("status");
+    console.log(response.status);
+    return response.json();
+  })
+  .then((data) => {
+    console.log("data");
+    console.log(data);
+  })
+  .catch((error) => {
+    console.log("error");
+    console.log(error);
+  })
+  ;}
+
   useEffect(()=>{
     fetch("https://assets.breatheco.de/apis/fake/todos/user/facundogds", {
       method: "GET",
@@ -57,6 +87,7 @@ const Home = () => {
       console.log(error);
     });
   }, []);
+
   return (
     <>
       <div className="text-center">
@@ -74,11 +105,10 @@ const Home = () => {
       <div className="text-center">
         <ul>
           {tasks.map((task, index) => {
-            return <li key={index}>{task.label}</li>;
+            return <li key={index}>{task.label}<button onClick={()=>deleteTask(index)}>x</button></li>;
           })}
         </ul>
       </div>
     </>
-  );
-};
+  );};
 export default Home;
